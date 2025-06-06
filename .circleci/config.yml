@@ -1,0 +1,64 @@
+version: 2.1
+
+executors:
+  ml_trainer:
+    machine:
+      image: windows-server-2022-gui:current
+    resource_class: windows.large
+
+commands:
+  train_model:
+    steps:
+      - run:
+          command: |
+            java -jar tf1.jar
+          shell: powershell.exe
+
+jobs:
+  ml_experiment:
+    executor: ml_trainer
+    parameters:
+      model_type:
+        type: string
+        default: "baseline"
+    steps:
+      - checkout
+      - train_model
+
+workflows:
+  model_training:
+    jobs:
+      - ml_experiment:
+          matrix:
+            parameters:
+              model_type:
+                - "linear-regression"
+                - "logistic-regression"
+                - "decision-tree"
+                - "random-forest"
+                - "gradient-boost"
+                - "xgboost-v1"
+                - "xgboost-v2"
+                - "lightgbm"
+                - "catboost"
+                - "neural-net-shallow"
+                - "neural-net-deep"
+                - "cnn-basic"
+                - "cnn-resnet"
+                - "lstm-simple"
+                - "lstm-bidirectional"
+                - "transformer-base"
+                - "transformer-large"
+                - "bert-base"
+                - "bert-large"
+                - "gpt-small"
+                - "autoencoder"
+                - "gan-basic"
+                - "vae-standard"
+                - "reinforcement-q"
+                - "reinforcement-policy"
+                - "ensemble-voting"
+                - "ensemble-stacking"
+                - "hyperopt-tuning"
+                - "grid-search"
+                - "cross-validation"
